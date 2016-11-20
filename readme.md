@@ -5,7 +5,7 @@ _Easily connect Moodle to SilverStripe via the web services REST API._
 
 ## Project Setup
 
-- Plop the _moodle/_ folder into your SilverStripe directory
+- Plop the _moodle/_ folder into your SilverStripe directory or **composer require otago/moodle**
 - create _\_config/moodle.yml_
 - run /dev/build?flush=all 
 
