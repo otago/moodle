@@ -1,13 +1,7 @@
 <?php
-class MoodleExamplePage extends Page {
 
-	private static $db = array(
-	);
+use OP\MoodleWebservice;
 
-	private static $has_one = array(
-	);
-
-}
 class MoodleExamplePage_Controller extends Page_Controller {
 	
 	public function init(){

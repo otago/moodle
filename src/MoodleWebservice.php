@@ -1,5 +1,10 @@
 <?php
 
+namespace OP;
+
+use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Control\Director;
+
 /**
  * Silverstripe Moodle webservice client. Utilises REST/JSON. JSON is only 
  * supported under Moodle 2.2 and above.
@@ -14,6 +19,8 @@
  */
 class MoodleWebservice {
 
+	use Configurable;
+	
 	private static $instance;   // singleton instance
 	private static $token; // JSON authentication token
 	private static $errors = array(); // connection errors 
@@ -39,7 +46,7 @@ class MoodleWebservice {
 			return MoodleWebservice::$instance;
 		}
 
-		$authentication = Config::inst()->get('MoodleWebservice', 'authentication');
+		$authentication = self::config()->get('authentication');
 
 		if (isset($authentication['statictoken']) && $authentication['statictoken']) {
 			MoodleWebservice::$instance = new static();
@@ -113,7 +120,7 @@ class MoodleWebservice {
 	 * @return type string
 	 */
 	public static function getLocation() {
-		$urltype = Config::inst()->get('MoodleWebservice', 'authentication');
+		$urltype = self::config()->get('authentication');
 		if (Director::isTest()) {
 			return $urltype['locationTest'];
 		} else if (Director::isDev()) {
@@ -635,84 +642,6 @@ class MoodleWebservice {
 
 	public function get_info() {
 		return $this->info;
-	}
-
-}
-
-/**
- * class used to respond with JSON requests 
- */
-class MoodleResponse {
-
-	private $error;
-	private $content;
-
-	function __construct($content, $error) {
-		$this->error = $error;
-		$this->content = $content;
-		if(is_string($content)) {
-			$tmppar = json_decode($this->content);
-			if (is_object($tmppar) && isset($tmppar->exception)) {
-				$this->error = $content;
-				$this->content = null;
-			}
-		}
-	}
-
-	/**
-	 * JSON array of the result of the response
-	 * @return json array
-	 */
-	public function Content() {
-		return $this->content;
-	}
-
-	/**
-	 * if there was any error in 
-	 * @return string
-	 */
-	public function Error() {
-		return $this->error;
-	}
-
-	/**
-	 * Recursivity creates the SilverStripe dataobject represntation of content
-	 * @param mixed $array
-	 * @return \DataObject|\DataList|null
-	 */
-	private function parseobject($array) {
-		if (is_object($array)) {
-			if (get_class($array) == 'DataObject') {
-				return $array;
-			}
-			$do = DataObject::create();
-			foreach (get_object_vars($array) as $key => $obj) {
-				if ($key == '__Type') {
-					$do->setField('Title', $obj);
-				} else if (is_array($obj) || is_object($obj)) {
-					$do->setField($key, $this->parseobject($obj));
-				} else {
-					$do->setField($key, $obj);
-				}
-			}
-			return $do;
-		} else if (is_array($array)) {
-			$dataList = ArrayList::create();
-			foreach ($array as $key => $obj) {
-				$dataList->push($this->parseobject($obj));
-			}
-			return $dataList;
-		}
-		return null;
-	}
-
-	/**
-	 * Returns SilverStripe object representations of content
-	 * @return \DataObject|\DataList|null
-	 */
-	public function Data() {
-		if(!is_string($this->content)) return null;
-		return $this->parseobject(json_decode($this->content));
 	}
 
 }

@@ -20,7 +20,7 @@ Example **moodle.yml** file:
 ---
 Name: MoodleWebservice
 ---
-MoodleWebservice:
+OP\MoodleWebservice:
     authentication:
         username: my_moodle_username
         password: my_password
