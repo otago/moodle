@@ -4,6 +4,7 @@ namespace OP;
 
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\Environment;
 
 /**
  * Silverstripe Moodle webservice client. Utilises REST/JSON. JSON is only 
@@ -77,7 +78,12 @@ class MoodleWebservice {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-		
+
+        if(Environment::getEnv('SS_OUTBOUND_PROXY') && Environment::getEnv('SS_OUTBOUND_PROXY_PORT')) {
+            curl_setopt($session, CURLOPT_PROXY, Environment::getEnv('SS_OUTBOUND_PROXY'));
+            curl_setopt($session, CURLOPT_PROXYPORT, Environment::getEnv('SS_OUTBOUND_PROXY_PORT'));
+        }
+
 		$result = curl_exec($ch);
 
 		// failure
