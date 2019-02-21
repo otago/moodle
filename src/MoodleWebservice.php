@@ -80,8 +80,8 @@ class MoodleWebservice {
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
         if(Environment::getEnv('SS_OUTBOUND_PROXY') && Environment::getEnv('SS_OUTBOUND_PROXY_PORT')) {
-            curl_setopt($session, CURLOPT_PROXY, Environment::getEnv('SS_OUTBOUND_PROXY'));
-            curl_setopt($session, CURLOPT_PROXYPORT, Environment::getEnv('SS_OUTBOUND_PROXY_PORT'));
+            curl_setopt($ch, CURLOPT_PROXY, Environment::getEnv('SS_OUTBOUND_PROXY'));
+            curl_setopt($ch, CURLOPT_PROXYPORT, Environment::getEnv('SS_OUTBOUND_PROXY_PORT'));
         }
 
 		$result = curl_exec($ch);
