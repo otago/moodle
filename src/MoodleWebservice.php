@@ -458,8 +458,12 @@ class MoodleWebservice {
 		$options['url'] = $url;
 		$options['CURLOPT_TIMEOUT'] = 10;
 		$options['CURLOPT_CONNECTTIMEOUT'] = 10;
-		 
-		
+
+        if(Environment::getEnv('SS_OUTBOUND_PROXY') && Environment::getEnv('SS_OUTBOUND_PROXY_PORT')) {
+            $options['CURLOPT_PROXY']= Environment::getEnv('SS_OUTBOUND_PROXY');
+            $options['CURLOPT_PROXYPORT']= Environment::getEnv('SS_OUTBOUND_PROXY_PORT');
+        }
+
 		$this->apply_opt($curl, $options);
 		$ret = curl_exec($curl);
 
