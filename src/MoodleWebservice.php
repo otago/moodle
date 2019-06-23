@@ -79,7 +79,7 @@ class MoodleWebservice {
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 		
-	// allow self signed certs in dev mode
+        // allow self signed certs in dev mode
         if (Director::isDev() || Director::isTest()) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '2');
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, '0');
@@ -464,7 +464,11 @@ class MoodleWebservice {
 		$options['url'] = $url;
 		$options['CURLOPT_TIMEOUT'] = 10;
 		$options['CURLOPT_CONNECTTIMEOUT'] = 10;
-
+        // allow self signed certs in dev mode
+        if (Director::isDev() || Director::isTest()) {
+            $options['CURLOPT_SSL_VERIFYHOST'] = '2';
+            $options['CURLOPT_SSL_VERIFYPEER'] = '0';
+        }
         if(Environment::getEnv('SS_OUTBOUND_PROXY') && Environment::getEnv('SS_OUTBOUND_PROXY_PORT')) {
             $options['CURLOPT_PROXY']= Environment::getEnv('SS_OUTBOUND_PROXY');
             $options['CURLOPT_PROXYPORT']= Environment::getEnv('SS_OUTBOUND_PROXY_PORT');
